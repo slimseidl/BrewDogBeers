@@ -1,0 +1,117 @@
+Calling on https://punkapi.online/v3/beers/366
+
+{
+	"id": 366,
+	"name": "Lost Lager",
+	"tagline": "Dry-Hopped Pilsner.",
+	"first_brewed": "2018",
+	"description": "A pilsner that combines the light, crisp and clean lager profile provided by Weihenstephan's house yeast, with the vibrant citrus and stonefruit aromas associated with new German hop Saphir. This lager is easy-going but has subtle depths; toast, hints of spice and a zesty lime marmalade character.",
+	"image": "366.png",
+	"abv": 4.7,
+	"ibu": 37,
+	"target_fg": 1006,
+	"target_og": 1042,
+	"ebc": 5,
+	"srm": 3,
+	"ph": 4.4,
+	"attenuation_level": 86,
+	"volume": {
+		"value": 20,
+		"unit": "litres"
+	},
+	"boil_volume": {
+		"value": 25,
+		"unit": "litres"
+	},
+	"method": {
+		"mash_temp": [
+			{
+				"temp": {
+					"value": 65,
+					"unit": "celsius"
+				},
+				"duration": 65
+			}
+		],
+		"fermentation": {
+			"temp": {
+				"value": 11,
+				"unit": "celsius"
+			}
+		},
+		"twist": "Amyloglucosidase: 1g"
+	},
+	"ingredients": {
+		"malt": [
+			{
+				"name": "Pilsner Malt",
+				"amount": {
+					"value": 3.36,
+					"unit": "kilograms"
+				}
+			},
+			{
+				"name": "Carapils Malt",
+				"amount": {
+					"value": 0.24,
+					"unit": "kilograms"
+				}
+			}
+		],
+		"hops": [
+			{
+				"name": "Hallertauer Taurus",
+				"amount": {
+					"value": 8,
+					"unit": "grams"
+				},
+				"add": "60",
+				"attribute": "Bitter"
+			},
+			{
+				"name": "Select Spalter",
+				"amount": {
+					"value": 15,
+					"unit": "grams"
+				},
+				"add": "20",
+				"attribute": "Flavour"
+			},
+			{
+				"name": "Select Spalter",
+				"amount": {
+					"value": 15,
+					"unit": "grams"
+				},
+				"add": "10",
+				"attribute": "Aroma"
+			},
+			{
+				"name": "Saphir",
+				"amount": {
+					"value": 30,
+					"unit": "grams"
+				},
+				"add": "0",
+				"attribute": "Aroma"
+			},
+			{
+				"name": "Saphir",
+				"amount": {
+					"value": 30,
+					"unit": "grams"
+				},
+				"add": "Dry Hop",
+				"attribute": "Aroma"
+			}
+		],
+		"yeast": "W34/70"
+	},
+	"food_pairing": [
+		"Vietnamese Pho",
+		"Buffalo Chicken Wings",
+		"Sashimi"
+	],
+	"brewers_tips": "Temperature control is extremely important for Lager, fermentation temperature around 10-12°C and a maturation period of 3-4 weeks at 1.5-2°C is ideal.",
+	"contributed_by": "Alexander Ivanovsky <alxiw>"
+}
