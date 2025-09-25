@@ -44,7 +44,7 @@ def get_all_beers():
 
 def get_beer_id(beerName):
     beer_list = []
-    for page in range(1,3):
+    for page in range(1,6):
         url = f'https://punkapi.online/v3/beers?page={page}&per_page=30' # API Call 
         response = requests.get(url).json()
         for beer in response:
@@ -55,11 +55,9 @@ def get_beer_id(beerName):
             beer_list.append(beer_data)
 
     for beers in beer_list:
-        if beerName == beers["name"]:
+        if beerName.lower() in beers["name"].lower():
             return beers["number"]
-        else:
-            return 1
 
 
 
-get_beer_id("How To Disappear Completely")
+
