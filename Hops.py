@@ -15,9 +15,6 @@ if isinstance(response, list):
 else:
     beer = response
 
-print(type(beer))
-print(beer.keys())
-
 hops = beer["ingredients"]["hops"]
 
 hop_dict = {}
