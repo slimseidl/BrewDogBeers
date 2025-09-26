@@ -53,7 +53,9 @@ class Beer():
 
     def get_hops_list(self, beerName):
 
-        url = f"https://punkapi.online/v3/beers/{self.get_beer_id(beerName)}"
+        beerID = self.get_beer_id(beerName)
+
+        url = f"https://punkapi.online/v3/beers/{beerID}"
         response = requests.get(url).json()
 
         if isinstance(response, list):
@@ -61,7 +63,7 @@ class Beer():
         else:
             beer = response
 
-        hops = beer["ingredients"]["hops"]
+        hops = beer.get("ingredients",{}).get("hops",[])
 
         hop_dict = {}
         for val in hops:
@@ -78,3 +80,15 @@ class Beer():
 
 
         return hop_list
+    
+    def print_info(self, name):
+        all_beers = self.get_all_beers()
+
+        for beer in all_beers:
+            if name == beer["name"]:
+                hops_list = self.get_hops_list(name)
+                hop_names = [hop["Hop Type"] for hop in hops_list]
+
+                print(f'{beer.get("name")} is a(n) {beer.get("tag")}. It\'s alcohol content is {beer.get("content")}%.'
+                      f'\nIt was first brewed on {beer.get("first_brewed")}. It contains the following hops: {", ".join(hop_names)}')
+                return
