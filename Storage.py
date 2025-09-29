@@ -21,7 +21,7 @@ class AllBrews(base): # Class to define a table / fields
     hops = relationship("Hops", back_populates="beer")
 
     __table_args__ = (
-        UniqueConstraint('name', name="unique_beer")
+        UniqueConstraint('name', name="unique_beer"),
     )
 
 class Hops(base):
@@ -37,6 +37,7 @@ class Hops(base):
 # Setup
 engine = create_engine('sqlite:///brews.db') # actual connection to database (new db brews.db)
 base.metadata.create_all(engine) # Creates a table if it doesnt already exist
+base.metadata.drop_all
 
 new_session = sessionmaker(bind=engine) # builds a session to talk to database
 session = new_session() # opens a session instance 
@@ -47,10 +48,10 @@ all_brews = all_beers.get_all_beers()
 hops_records = all_beers.get_all_hops()
 
 
-for beer in all_beers:
+for beer in all_brews:
     fb = beer["first_brewed"]
     try:
-        if "/" in fb:
+        if "/" in fb:             # for actual date
             first_brewed = datetime.strptime(fb, "%m/%Y").date()
         else:
             first_brewed = datetime.strptime(fb, "%Y").date()
@@ -69,13 +70,13 @@ for beer in all_beers:
 
     try:
         session.add(record)
-        session.commit()
+        session.commit() # commit after every record to handle duplicates, initial add will take longer
     except IntegrityError:
         session.rollback()
         print(f"Duplicate skipped: {beer['name']}")
 
-
-for beer_name, hops in hops_records.items():
+# Adding hops to hop table
+for beer_name, hops in hops_records.items(): 
     beer_obj = session.query(AllBrews).filter_by(name=beer_name).first()
 
     if beer_obj:
@@ -87,8 +88,7 @@ for beer_name, hops in hops_records.items():
             session.add(record)
 
 session.commit()
-
-
+session.close()
 
 
     
