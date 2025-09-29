@@ -1,21 +1,98 @@
 from Beer import Beer
-from sqlalchemy import String, Float, Integer, Text, create_engine, Column, UniqueConstraint
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import String, Float, Integer, ForeignKey, create_engine, Column, UniqueConstraint, Date
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 import sqlite3
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 
+base = declarative_base() # table inherits from base class, registers with SQLAlchemy
 
-all = Beer()
-all_brews = all.get_all_beers()
 
-base = declarative_base()
+class AllBrews(base): # Class to define a table / fields
+    __tablename__ = "BrewDogBeers"
 
-class dbRecords(base):
-    __tablename__ = "BrewDog Beers"
-    id_ = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     tagline = Column(String)
+    content = Column(Float)
+    ibus = Column(Float)
+    first_brewed = Column(Date)
+
+    hops = relationship("Hops", back_populates="beer")
+
+    __table_args__ = (
+        UniqueConstraint('name', name="unique_beer")
+    )
+
+class Hops(base):
+    __tablename__ = "Hops"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    hop_type = Column(String, nullable=False)
+    beer_id = Column(Integer, ForeignKey("BrewDogBeers.id"))
+
+    beer = relationship("AllBrews",back_populates="hops")
+
+
+
+# Setup
+engine = create_engine('sqlite:///brews.db') # actual connection to database (new db brews.db)
+base.metadata.create_all(engine) # Creates a table if it doesnt already exist
+
+new_session = sessionmaker(bind=engine) # builds a session to talk to database
+session = new_session() # opens a session instance 
+
+# API Calls
+all_beers = Beer()
+all_brews = all_beers.get_all_beers()
+hops_records = all_beers.get_all_hops()
+
+
+for beer in all_beers:
+    fb = beer["first_brewed"]
+    try:
+        if "/" in fb:
+            first_brewed = datetime.strptime(fb, "%m/%Y").date()
+        else:
+            first_brewed = datetime.strptime(fb, "%Y").date()
+    except Exception:
+        first_brewed = None
+
+
+    record = AllBrews(
+        id = beer["id"],
+        name = beer["name"],
+        tagline = beer.get("tagline"),
+        content = beer.get("abv"),
+        ibus = beer.get("ibu"),
+        first_brewed = first_brewed
+    )
+
+    try:
+        session.add(record)
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        print(f"Duplicate skipped: {beer['name']}")
+
+
+for beer_name, hops in hops_records.items():
+    beer_obj = session.query(AllBrews).filter_by(name=beer_name).first()
+
+    if beer_obj:
+        for hop in hops:
+            record = Hops(
+                hop_type = hop["Hop Type"],
+                beer_id = beer_obj.id
+            )
+            session.add(record)
+
+session.commit()
+
+
+
+
+    
+
 
 
 

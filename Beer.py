@@ -81,6 +81,18 @@ class Beer():
 
         return hop_list
     
+    def get_all_hops(self):
+        all_beers = self.get_all_beers()
+        hops_records = {}
+
+        for beer in all_beers:
+            name = beer["name"]
+            hops = self.get_hops_list(name)
+
+            hops_records[name] = hops
+
+        return hops_records
+    
     def print_info(self, name):
         all_beers = self.get_all_beers()
 
