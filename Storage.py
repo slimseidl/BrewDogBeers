@@ -16,20 +16,6 @@ class AllBrews(base): # Class to define a table / fields
     ibu = Column(Float)
     first_brewed = Column(Date)
 
-    # hops = relationship("Hops", back_populates="beer")
-
-
-# class Hops(base):
-#     __tablename__ = "Hops"
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     hop_type = Column(String, nullable=False)
-#     beer_id = Column(Integer, ForeignKey("BrewDogBeers.id"))
-
-#     beer = relationship("AllBrews",back_populates="hops")
-
-#     __table_args__=(
-#         UniqueConstraint('beer_id', 'hop_type', name='unq_beer_hop'),
-#     )
 
 
 
@@ -43,7 +29,7 @@ session = new_session() # opens a session instance
 
 # API Calls
 all_brews = Beer().get_all_beers()
-# hops_records = all_beers.get_all_hops()
+
 
 def parse_first_brewed(fb):
     try:
@@ -68,20 +54,6 @@ for beer in all_brews:
 
 session.commit()
 session.close()
-
-# Adding hops to hop table
-# for beer_name, hops in hops_records.items(): 
-#     beer_obj = session.query(AllBrews).filter_by(name=beer_name).first()
-
-#     if beer_obj:
-#         for hop in hops:
-#             record = Hops(
-#                 hop_type = hop["Hop Type"],
-#                 beer_id = beer_obj.id
-#             )
-#             session.merge(record)
-
-# session.commit()
 
 
     

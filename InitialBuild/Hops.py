@@ -2,7 +2,7 @@
 import requests
 import json
 import pprint
-from BeerInfo import get_beer_id
+from InitialBuild.BeerInfo import get_beer_id
 
 
 beerName = "Old World India Pale Ale"
@@ -32,9 +32,4 @@ hop_list = list(hop_dict.values())
 
 
 pprint.pp(hop_list)
-
-
-    
-
-
 

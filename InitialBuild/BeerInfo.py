@@ -1,3 +1,5 @@
+# Building the base structure for beer API
+
 import requests 
 import json
 import pprint

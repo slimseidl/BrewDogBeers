@@ -4,7 +4,8 @@ import pprint
 
 class Beer():
     def __init__(self):
-        pass 
+        self._beers = None
+        self._hops = {}
 
 # Base API = https://punkapi.online/v3/
 # Random beer = beers/random
@@ -19,6 +20,8 @@ class Beer():
 # abv_lt={number} = retrieve a list of beers that have an ABV less than the specified number
 
     def get_all_beers(self):
+        if self._beers is not None:
+            return self._beers
         beer_list = [] # empty list to append dictionaries to
 
         for page in range(1,30): 
@@ -40,8 +43,8 @@ class Beer():
                     "first_brewed": beer["first_brewed"]
                 }
                 beer_list.append(beer_data)
-
-        return beer_list
+        self._beers = beer_list
+        return self._beers
 
     def get_beer_id(self, beerName):
         all_beer = self.get_all_beers()
@@ -52,9 +55,10 @@ class Beer():
 
 
     def get_hops_list(self, beerName):
+        if beerName in self._hops:
+            return self._hops[beerName]
 
         beerID = self.get_beer_id(beerName)
-
         url = f"https://punkapi.online/v3/beers/{beerID}"
         response = requests.get(url).json()
 
@@ -72,47 +76,48 @@ class Beer():
 
             if hop_type not in hop_dict:
                 hop_dict[hop_type] = {"Hop Type": hop_type, "Attributes": []}
-
             if attribute not in hop_dict[hop_type]["Attributes"]:
                 hop_dict[hop_type]["Attributes"].append(attribute)
 
         hop_list = list(hop_dict.values())
-
-
+        self._hops[beerName] = hop_list
         return hop_list
-    
-    def get_all_hops(self):
-        all_beers = self.get_all_beers()
-        hops_records = {}
 
-        for beer in all_beers:
-            name = beer["name"]
-            hops = []
-
-            if "ingredients" in beer and "hops" in beer["ingredients"]:
-                for val in beer["ingredients"]["hops"]:
-                    hop_type = val["name"]
-                    attribute = val["attribute"]
-
-                    if not any(h["Hop Type"] == hop_type for h in hops):
-                        hops.append({"Hop Type": hop_type, "Attributes": [attribute]})
-                    else:
-                        for h in hops:
-                            if h["Hop Type"] == hop_type and attribute not in h["Attributes"]:
-                                h["Attributes"].append(attribute)
-
-            hops_records[name] = hops
-
-        return hops_records
     
     def print_info(self, name):
         all_beers = self.get_all_beers()
 
         for beer in all_beers:
-            if name == beer["name"]:
+            if name.lower() in beer["name"].lower():
                 hops_list = self.get_hops_list(name)
                 hop_names = [hop["Hop Type"] for hop in hops_list]
 
                 print(f'{beer.get("name")} is a(n) {beer.get("tagline")}. It\'s alcohol content is {beer.get("abv")}%.'
                       f'\nIt was first brewed on {beer.get("first_brewed")}. It contains the following hops: {", ".join(hop_names)}')
                 return
+
+
+    
+    # def get_all_hops(self):
+    #     all_beers = self.get_all_beers()
+    #     hops_records = {}
+
+    #     for beer in all_beers:
+    #         name = beer["name"]
+    #         hops = []
+
+    #         if "ingredients" in beer and "hops" in beer["ingredients"]:
+    #             for val in beer["ingredients"]["hops"]:
+    #                 hop_type = val["name"]
+    #                 attribute = val["attribute"]
+
+    #                 if not any(h["Hop Type"] == hop_type for h in hops):
+    #                     hops.append({"Hop Type": hop_type, "Attributes": [attribute]})
+    #                 else:
+    #                     for h in hops:
+    #                         if h["Hop Type"] == hop_type and attribute not in h["Attributes"]:
+    #                             h["Attributes"].append(attribute)
+
+    #         hops_records[name] = hops
+
+    #     return hops_records

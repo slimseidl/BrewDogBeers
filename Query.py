@@ -1,3 +1,6 @@
+# Query the DB to find specific beers or information
+# Create class instance from queried beers to get more information
+
 from Storage import AllBrews, base
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
@@ -25,6 +28,8 @@ for row in stout: # for row in (xxxx) change xxxx to query name
     print(f'Name: {row.name}\n'
           f'\tTag: {row.tagline}\n'
           f'\tABV: {row.abv}')
+    
+
 
 
 
