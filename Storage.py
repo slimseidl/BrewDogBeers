@@ -35,7 +35,7 @@ class AllBrews(base): # Class to define a table / fields
 
 # Setup
 engine = create_engine('sqlite:///brews.db') # actual connection to database (new db brews.db)
-base.metadata.drop_all(engine)
+# base.metadata.drop_all(engine)
 base.metadata.create_all(engine) # Creates a table if it doesnt already exist
 
 new_session = sessionmaker(bind=engine) # builds a session to talk to database
