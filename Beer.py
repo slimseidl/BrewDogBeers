@@ -32,11 +32,11 @@ class Beer():
             # append every beer dictionary to a beer list for further processing
             for beer in response:
                 beer_data = {
-                    "number":beer["id"],
+                    "id":beer["id"],
                     "name": beer["name"],
-                    "tag": beer["tagline"],
-                    "content": beer["abv"],
-                    "ibus": beer["ibu"],
+                    "tagline": beer["tagline"],
+                    "abv": beer["abv"],
+                    "ibu": beer["ibu"],
                     "first_brewed": beer["first_brewed"]
                 }
                 beer_list.append(beer_data)
@@ -47,7 +47,7 @@ class Beer():
         all_beer = self.get_all_beers()
         for beer in all_beer:
             if beerName.lower() in beer["name"].lower():
-                return beer["number"]
+                return beer["id"]
             
 
 
@@ -87,7 +87,19 @@ class Beer():
 
         for beer in all_beers:
             name = beer["name"]
-            hops = self.get_hops_list(name)
+            hops = []
+
+            if "ingredients" in beer and "hops" in beer["ingredients"]:
+                for val in beer["ingredients"]["hops"]:
+                    hop_type = val["name"]
+                    attribute = val["attribute"]
+
+                    if not any(h["Hop Type"] == hop_type for h in hops):
+                        hops.append({"Hop Type": hop_type, "Attributes": [attribute]})
+                    else:
+                        for h in hops:
+                            if h["Hop Type"] == hop_type and attribute not in h["Attributes"]:
+                                h["Attributes"].append(attribute)
 
             hops_records[name] = hops
 
@@ -101,6 +113,6 @@ class Beer():
                 hops_list = self.get_hops_list(name)
                 hop_names = [hop["Hop Type"] for hop in hops_list]
 
-                print(f'{beer.get("name")} is a(n) {beer.get("tag")}. It\'s alcohol content is {beer.get("content")}%.'
+                print(f'{beer.get("name")} is a(n) {beer.get("tagline")}. It\'s alcohol content is {beer.get("abv")}%.'
                       f'\nIt was first brewed on {beer.get("first_brewed")}. It contains the following hops: {", ".join(hop_names)}')
                 return
